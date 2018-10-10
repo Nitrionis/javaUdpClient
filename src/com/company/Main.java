@@ -3,6 +3,7 @@ package com.company;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Scanner;
 
 public class Main {
 
@@ -14,16 +15,23 @@ public class Main {
 	    byte[] receiveData = new byte[1024];
 
 	    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 8080);
-
-	    String msgSend = "Hello world";
-	    sendPacket.setData(msgSend.getBytes());
-
-	    clientSocket.send(sendPacket);
-
 	    DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-	    clientSocket.receive(receivePacket);
 
-	    String modifiedSentence = new String(receivePacket.getData());
-	    System.out.println(modifiedSentence);
+	    Scanner scanner = new Scanner(System.in);
+	    while (true) {
+		    String msgSend = scanner.nextLine();
+
+		    if (msgSend.equals("exit")) {
+			    clientSocket.close();
+			    return;
+		    }
+
+		    sendPacket.setData(msgSend.getBytes());
+		    clientSocket.send(sendPacket);
+
+		    clientSocket.receive(receivePacket);
+		    String returnedString = new String(receivePacket.getData());
+		    System.out.println(returnedString);
+	    }
     }
 }
