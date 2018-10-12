@@ -7,19 +7,36 @@ import java.util.Scanner;
 
 public class Main {
 
+	static int bufferSize = 1024;
+
     public static void main(String[] args) throws Exception {
 	    DatagramSocket clientSocket = new DatagramSocket();
-	    InetAddress IPAddress = InetAddress.getByName("localhost");
+		Scanner scanner = new Scanner(System.in);
 
-	    byte[] sendData = new byte[1024];
-	    byte[] receiveData = new byte[1024];
+	    System.out.print("Enter ip address (localhost by default): ");
+	    String ipAddressStr = scanner.nextLine();
 
-	    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 8080);
+	    InetAddress ipAddress;
+	    if (1 < ipAddressStr.length()) {
+		    ipAddress = InetAddress.getByName(ipAddressStr);
+	    }
+	    else {
+		    ipAddress = InetAddress.getByName("localhost");
+	    }
+
+	    byte[] sendData = new byte[bufferSize];
+	    byte[] receiveData = new byte[bufferSize];
+
+	    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8080);
 	    DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
-	    Scanner scanner = new Scanner(System.in);
+	    System.out.println("Write msg!");
+
 	    while (true) {
 		    String msgSend = scanner.nextLine();
+
+		    if (bufferSize < msgSend.length())
+		    	continue;
 
 		    if (msgSend.equals("exit")) {
 			    clientSocket.close();
